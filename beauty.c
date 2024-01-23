@@ -15,17 +15,18 @@ void menu1_2();//고객 정보 검색
 void menu1_3();//고객 정보 수정
 
 void menu3_1();//결제 및 적립
-void menu3_2();//서비스 사용
-void loader();
+void menu3_2();//서비스 사용 
 
-int keyfind();
-void save(int key, char scan1[15], char scan2[5], int point);
-int find();
+void loader();//저장된 값 불러오기 함수
+void save(int key, char scan1[15], char scan2[5], int point);//고객 정보 입력 및 수정 시 정보 저장 함수
+
+int keyfind();//사용자가 입력한 키번호로 고객 정보 찾는 함수
+int find();//이름 또는 전화번호로 고객 정보를 찾는 함수
 
 int check(int m);//메뉴확인 함수
-int menu; // 메뉴 이동하는 변수
-
 int yn();//예/아니요 함수
+
+int menu; // 메뉴 이동시 번호를 담는 변수
 
 FILE* fp;
 
@@ -48,9 +49,6 @@ inform cus[100];//고객 구조체 배열, 100명 할당
 int main(void)
 {
 	loader();
-
-
-
 
 	//메인함수에서 메뉴 실행	
 	while (1)
@@ -438,6 +436,7 @@ void menu3_2()
 
 }
 
+//반환 되는 정수 값으로 메뉴 선택 -> 1page에서 3항목으로 넘어가면 정수 '10' 받아오고 입력값 '3'을 더해서 '13'반환
 int check(int m)
 {
 	int num = 0;
@@ -632,50 +631,61 @@ int keyfind()
 
 void loader()
 {
-	int first;
 	char buffer[60];
 	char* temp;
-	fp = fopen("고객관리부.txt", "r+");
-	fseek(fp, 0, SEEK_SET);
-	fscanf(fp, "%d", &first);
-	k = first;
+	int i = 0;
 	int j = 0;
+	fp = fopen("고객관리부.txt", "r+");
+
+	//k값 읽기
+	while (fgets(buffer, sizeof(buffer), fp) != NULL)//한 줄 읽기
+	{
+		temp = strtok(buffer, " "); //띄어쓰기를 기준으로 문자열 자르기
+		k = atoi(temp);
+	}
+
+	//printf("%d", k);
+	//system("pause");
+
+	//고객정보 읽기
 	if (fp != NULL)
 	{
-		for (int i = 0; i < k; i++)// 고객 수 만큼 반복
+		for (i; i < k; i++)// 고객 수 만큼 반복
 		{
+			j = 0;
 			while (fgets(buffer, sizeof(buffer), fp) != NULL)//한 줄 읽기
 			{
 				temp = strtok(buffer, " "); //띄어쓰기를 기준으로 문자열 자르기		
+
 				while (temp != NULL)
 				{
-					j = 0;
-						if (j == 0)//첫번째는 키번호
-						{
-							cus[i].key = atoi(temp);
-							temp = strtok(NULL, " ");
-							j++;
-						}
-						else if (j == 1)//두번째는 이름
-						{
-							//strcpy(cus[i].name, temp);
-							temp = strtok(NULL, " ");
-							j++;
-						}
-						else if (j == 2)//세번째는 전화번호
-						{
-							//strcpy(cus[i].number, temp);
-							temp = strtok(NULL, " ");
-							j++;
-						}
-						else if (j == 3)//네번째는 포인트
-						{
-							cus[i].point = atoi(temp);
-							temp = strtok(NULL, " ");
-							j++;
-						}
+					if (j == 0)
+					{
+						cus[i].key = atoi(temp);
+						temp = strtok(NULL, " ");
+						j++;
 					}
+					else if (j == 1)//두번째는 이름
+					{
+						//strcpy(cus[i].name, temp);
+						temp = strtok(NULL, " ");
+						j++;
+					}
+					else if (j == 2)//세번째는 전화번호
+					{
+						//strcpy(cus[i].number, temp);
+						temp = strtok(NULL, " ");
+						j++;
+					}
+					else if (j == 3)//네번째는 포인트
+					{
+						cus[i].point = atoi(temp);
+						temp = strtok(NULL, " ");
+						j++;
+					}
+
 				}
 			}
 		}
 	}
+}
