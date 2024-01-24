@@ -550,7 +550,7 @@ void save(int key, char scan1[15], char scan2[5], int point)
 		cus[key].point = 0;
 
 		fprintf(fp, "\n");
-		fprintf(fp, "%d %s %s %d ", cus[key].key, cus[key].name, cus[key].number, cus[key].point);
+		fprintf(fp, "%d %s %s %d", cus[key].key, cus[key].name, cus[key].number, cus[key].point);
 
 		k++;
 	}
@@ -607,7 +607,7 @@ int keyfind()
 {
 	int keynum = 0;
 	int check = 0;
-
+	int k = 1;
 	while (1)
 	{
 		getchar();
@@ -637,55 +637,61 @@ void loader()
 	int j = 0;
 	fp = fopen("고객관리부.txt", "r+");
 
-	//k값 읽기
-	while (fgets(buffer, sizeof(buffer), fp) != NULL)//한 줄 읽기
-	{
-		temp = strtok(buffer, " "); //띄어쓰기를 기준으로 문자열 자르기
-		k = atoi(temp);
-	}
+	fscanf(fp, "%d", &k);
 
-	//printf("%d", k);
-	//system("pause");
 
 	//고객정보 읽기
 	if (fp != NULL)
 	{
-		for (i; i < k; i++)// 고객 수 만큼 반복
+		fseek(fp, 2, SEEK_CUR);
+		for (int i = 0; i < k; i++)// 고객 수 만큼 반복
 		{
+			printf("%d\n", k);
+			fgets(buffer, sizeof(buffer), fp);
+			temp = strtok(buffer, " "); //띄어쓰기를 기준으로 문자열 자르기		
 			j = 0;
-			while (fgets(buffer, sizeof(buffer), fp) != NULL)//한 줄 읽기
+			while (temp != NULL)
 			{
-				temp = strtok(buffer, " "); //띄어쓰기를 기준으로 문자열 자르기		
-
-				while (temp != NULL)
+				
+				if (j == 0)
 				{
-					if (j == 0)
-					{
-						cus[i].key = atoi(temp);
-						temp = strtok(NULL, " ");
-						j++;
-					}
-					else if (j == 1)//두번째는 이름
-					{
-						//strcpy(cus[i].name, temp);
-						temp = strtok(NULL, " ");
-						j++;
-					}
-					else if (j == 2)//세번째는 전화번호
-					{
-						//strcpy(cus[i].number, temp);
-						temp = strtok(NULL, " ");
-						j++;
-					}
-					else if (j == 3)//네번째는 포인트
-					{
-						cus[i].point = atoi(temp);
-						temp = strtok(NULL, " ");
-						j++;
-					}
+					cus[i].key = atoi(temp);
+					temp = strtok(NULL, " ");
+					j++;
 
 				}
+				else if (j == 1)//두번째는 이름
+				{
+					strcpy(cus[i].name, temp);
+					temp = strtok(NULL, " ");
+					j++;
+				}
+				else if (j == 2)//세번째는 전화번호
+				{
+					strcpy(cus[i].number, temp);
+					temp = strtok(NULL, " ");
+					j++;
+				}
+				else if (j == 3)//네번째는 포인트
+				{
+					cus[i].point = atoi(temp);
+					temp = strtok(NULL, " ");
+					j++;
+				}
 			}
+			/*for (int i = 0; i < k; i++)// 고객 수 만큼 반복
+			{
+				//확인용
+				printf("KEY: %03d 이름: %s / 전화번호 뒷자리: %s / 포인트: %d\n", i + 1, cus[i].name, cus[i].number, cus[i].point);
+				printf("KEY: %03d 이름: %s / 전화번호 뒷자리: %s / 포인트: %d\n", i + 1, cus[i].name, cus[i].number, cus[i].point);
+				system("pause");
+			}*/
 		}
 	}
+	else
+	{
+		printf("파일이 존재하지 않습니다.");
+		system("pause");
+	}
 }
+
