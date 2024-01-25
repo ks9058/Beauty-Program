@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include <string.h> // strlen 함수가 선언된 헤더 파일
-#include<stdlib.h> //system()함수가 선언된 헤더 파일이며, #include<stdio.h>의 아랫줄에 삽입
+#include <string.h> 
+#include<stdlib.h> 
 #include <windows.h>
 
 void mainmenu();//미용실 고객 관리 서비스 메뉴, 메인화면
@@ -17,7 +17,7 @@ void menu1_3();//고객 정보 수정
 void menu3_1();//결제 및 적립
 void menu3_2();//서비스 사용 
 
-void loader();//저장된 값 불러오기 함수
+void loading();//저장된 값 불러오기 함수
 void save(int key, char scan1[15], char scan2[5], int point);//고객 정보 입력 및 수정 시 정보 저장 함수
 
 int keyfind();//사용자가 입력한 키번호로 고객 정보 찾는 함수
@@ -30,8 +30,7 @@ int menu; // 메뉴 이동시 번호를 담는 변수
 
 FILE* fp;
 
-
-int k;// 파일에서 받아오는것으로 시작해야함			
+int k;//총 고객수 받아오는 변수		
 
 //고객 정보 구조체
 typedef struct {
@@ -42,35 +41,37 @@ typedef struct {
 }inform;
 
 
-inform cus[100];//고객 구조체 배열, 100명 할당
+inform cus[500];//고객 구조체 배열, 원하는 인원만큼 할당
 
 
 
 int main(void)
 {
-	loader();
+	loading();
 
 	//메인함수에서 메뉴 실행	
 	while (1)
 	{
 
-		mainmenu();// 미용실 고객관리 서비스입니다. 후 메뉴 띄우기
+		mainmenu();// 메인메뉴 띄우기
 
 		break;
 	}
 	printf("****************************************************************************************************\n");
-	printf("프로그램 종료\n");
-	printf("****************************************************************************************************\n");
-
+	//사용자가 창을 닫는 경우 k값이 파일에 입력되지 않는 경우가 있어서 아래 두 줄의 코드 적용
 	fseek(fp, 0, SEEK_SET);
 	fprintf(fp, "%d", k);
+	printf("저장되었습니다.\n");	
+	printf("****************************************************************************************************\n");
+	printf("프로그램 종료 - "); 
+	system("pause");
 	fclose(fp);
 
 	return 0;
 }
 
 
-// V
+//메인화면
 void mainmenu()
 {
 	while (1)
@@ -79,7 +80,7 @@ void mainmenu()
 		printf("****************************************************************************************************\n");
 		printf("미용실 고객 관리 서비스입니다.\n");
 		printf("****************************************************************************************************\n");
-		printf("0. 나가기\n");
+		printf("0. 저장 및 나가기\n");
 		printf("1. 고객정보관리\n");
 		printf("2. 고객추가\n");
 		printf("3. 결제 및 서비스\n");
@@ -108,7 +109,7 @@ void mainmenu()
 }
 
 
-//V
+//고객정보관리 
 void menu1()
 {
 
@@ -148,7 +149,7 @@ void menu1()
 }
 
 
-//V
+//고객추가
 void menu2()
 {
 	char scan1[15];
@@ -173,8 +174,6 @@ void menu2()
 		printf("****************************************************************************************************\n");
 		if (yn() == 0)
 		{
-
-
 			printf("취소되었습니다.\n");
 			printf("****************************************************************************************************\n");
 			system("pause");
@@ -193,7 +192,7 @@ void menu2()
 }
 
 
-//V
+//결제 및 서비스
 void menu3()
 {
 	printf("****************************************************************************************************\n");
@@ -227,7 +226,7 @@ void menu3()
 
 
 
-//V
+//전체고객정보
 void menu1_1()
 {
 	int cnt = 0;
@@ -254,7 +253,7 @@ void menu1_1()
 }
 
 
-//V
+//고객 정보 검색
 void menu1_2()
 {
 
@@ -268,7 +267,7 @@ void menu1_2()
 }
 
 
-
+//고객 정보 수정
 void menu1_3()
 {
 	int keynum = 0;
@@ -332,9 +331,7 @@ void menu1_3()
 }
 
 
-
-
-
+//결제 및 적립
 void menu3_1()
 {
 
@@ -370,6 +367,7 @@ void menu3_1()
 				printf("KEY: %03d 이름: %s / 전화번호 뒷자리: %s / 포인트: %d\n", cus[keynum].key, cus[keynum].name, cus[keynum].number, cus[keynum].point);
 				printf("****************************************************************************************************\n");
 				system("pause");
+				break;
 			}
 			else
 			{
@@ -383,7 +381,7 @@ void menu3_1()
 }
 
 
-
+//서비스 사용
 void menu3_2()
 {
 	int keynum = 0;
@@ -418,6 +416,7 @@ void menu3_2()
 					printf("KEY: %03d 이름: %s / 전화번호 뒷자리: %s / 포인트: %d\n", cus[keynum].key, cus[keynum].name, cus[keynum].number, cus[keynum].point);
 					printf("****************************************************************************************************\n");
 					system("pause");
+					break;
 				}
 				else
 				{
@@ -436,22 +435,17 @@ void menu3_2()
 
 }
 
+
 //반환 되는 정수 값으로 메뉴 선택 -> 1page에서 3항목으로 넘어가면 정수 '10' 받아오고 입력값 '3'을 더해서 '13'반환
 int check(int m)
 {
 	int num = 0;
 
-
 	printf("메뉴를 선택하세요:");
-
-
 
 	while (1)
 	{
-
-		scanf("%d", &num);
-
-
+		scanf("%d", &num);		
 		num = num + m;
 
 
@@ -520,7 +514,7 @@ int check(int m)
 }
 
 
-
+//예/아니요 함수
 int yn()
 {
 	int ch;
@@ -540,6 +534,7 @@ int yn()
 }
 
 
+//고객정보 변동사항 저장 함수
 void save(int key, char scan1[15], char scan2[5], int point)
 {
 	if (point == 2)//고객추가
@@ -548,9 +543,6 @@ void save(int key, char scan1[15], char scan2[5], int point)
 		strcpy(cus[key].number, scan2);
 		cus[key].key = k + 1;
 		cus[key].point = 0;
-
-		fprintf(fp, "\n");
-		fprintf(fp, "%d %s %s %d", cus[key].key, cus[key].name, cus[key].number, cus[key].point);
 
 		k++;
 	}
@@ -567,9 +559,20 @@ void save(int key, char scan1[15], char scan2[5], int point)
 	{
 		cus[key].point = cus[key].point - 10;
 	}
+
+	fseek(fp, 0, SEEK_SET);
+	for (int i = 0; i < k; i++)
+	{
+		fprintf(fp,"\n");
+		fprintf(fp, "%d %s %s %d", cus[i].key, cus[i].name, cus[i].number, cus[i].point);
+	}
+
+	fseek(fp, 0, SEEK_SET);
+	fprintf(fp, "%d", k);
 }
 
 
+//이름 또는 전화번호 뒤자리로 사용자 검색
 int find()
 {
 	int cnt = 0;
@@ -603,6 +606,7 @@ int find()
 }
 
 
+//키번호 정보 검색
 int keyfind()
 {
 	int keynum = 0;
@@ -613,7 +617,7 @@ int keyfind()
 		getchar();
 		scanf("%d", &keynum);
 
-		for (int i = 0; i < sizeof(cus) / sizeof(inform); i++)
+		for (int i = 0; i <k; i++)
 		{
 			if ((keynum == cus[i].key) && (keynum > 0) && (keynum <= sizeof(cus) / sizeof(inform)))
 			{
@@ -629,14 +633,16 @@ int keyfind()
 	}
 }
 
-void loader()
+
+//불러오기 함수
+void loading()
 {
 	char buffer[60];
 	char* temp;
-	int i = 0;
 	int j = 0;
 	fp = fopen("고객관리부.txt", "r+");
 
+	fseek(fp, 0, SEEK_SET);
 	fscanf(fp, "%d", &k);
 
 
@@ -644,7 +650,7 @@ void loader()
 	if (fp != NULL)
 	{
 		fseek(fp, 2, SEEK_CUR);
-		for (int i = 0; i < k; i++)// 고객 수 만큼 반복
+		for (int i = 0; i < k; i++)//저장된 고객 수 만큼 반복
 		{
 			printf("%d\n", k);
 			fgets(buffer, sizeof(buffer), fp);
@@ -679,13 +685,6 @@ void loader()
 					j++;
 				}
 			}
-			/*for (int i = 0; i < k; i++)// 고객 수 만큼 반복
-			{
-				//확인용
-				printf("KEY: %03d 이름: %s / 전화번호 뒷자리: %s / 포인트: %d\n", i + 1, cus[i].name, cus[i].number, cus[i].point);
-				printf("KEY: %03d 이름: %s / 전화번호 뒷자리: %s / 포인트: %d\n", i + 1, cus[i].name, cus[i].number, cus[i].point);
-				system("pause");
-			}*/
 		}
 	}
 	else
